@@ -11,7 +11,14 @@ find_package(OpenGL REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(mini-football src/main.cpp)
+add_executable(mini-football src/main.cpp
+        src/entities/Player.cpp
+        include/entities/Player.h
+        src/entities/Field.cpp
+        include/entities/Field.h
+        src/entities/DBox.cpp
+        include/entities/DBox.h
+)
 # --- Link OpenGL + FreeGLUT ---
 target_link_libraries(mini-football
         ${OPENGL_LIBRARIES}
