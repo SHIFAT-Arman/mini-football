@@ -4,22 +4,29 @@
 
 #ifndef MINI_FOOTBALL_PLAYER_H
 #define MINI_FOOTBALL_PLAYER_H
-
-#endif // MINI_FOOTBALL_PLAYER_H
-
-#pragma once
-
 class Player
 {
 public:
-    Player(int x, int y, int r);
+    // Position
+    float x;
+    float y;
 
-    void draw() const;
+    // Properties
+    float radius;
+    int team; // 0 = left (purple), 1 = right (red)
+
+    // Constructor
+    Player(float startX, float startY, int teamNumber);
+
+    // Draw the player
+    void draw();
+
+    // Move the player
+    void move(float dx, float dy);
 
 private:
-    int x;
-    int y;
-    int radius;
-    
-    void plotCirclePoints(int xc, int yc, int x, int y) const;
+    // Draw circle using Bresenham
+    void drawCircleBresenham(int xc, int yc, int r);
+    void plotCirclePoints(int xc, int yc, int x, int y);
 };
+#endif // MINI_FOOTBALL_PLAYER_H

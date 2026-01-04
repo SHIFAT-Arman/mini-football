@@ -18,6 +18,10 @@ add_executable(mini-football src/main.cpp
         include/entities/Field.h
         src/entities/DBox.cpp
         include/entities/DBox.h
+        src/entities/GoalPost.cpp
+        include/entities/GoalPost.h
+        src/entities/Ball.cpp
+        include/entities/Ball.h
 )
 # --- Link OpenGL + FreeGLUT ---
 target_link_libraries(mini-football
