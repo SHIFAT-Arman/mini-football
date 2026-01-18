@@ -17,7 +17,8 @@ private:
     
     void drawFieldBoundary() const;
     void drawCenterLine() const;
-    
+    void drawCenterCircle() const;
+    void drawPenaltyBoxes() const;
     void drawRectangle(float x, float y, float width, float height) ;
 };
 #endif

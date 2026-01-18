@@ -3,8 +3,8 @@
 //
 
 #include "../../include/entities/Field.h"
-#include <GL/glut.h>
-
+#include <GL/freeglut.h>
+#include <cmath>
 Field::Field()
 {
     fieldWidth = 900.0f;
@@ -15,6 +15,8 @@ void Field::draw()
     glColor3f(1.0f, 1.0f, 1.0f);
     drawFieldBoundary();
     drawCenterLine();
+    drawCenterCircle();
+    drawPenaltyBoxes();
 }
 void Field::drawFieldBoundary() const
 {
@@ -32,7 +34,43 @@ void Field::drawCenterLine() const
     glVertex2f(0.0f,  fieldHeight);
     glEnd();
 }
-void Field::drawRectangle(float x, float y, float width, float height) 
+void Field::drawCenterCircle() const
+{
+    float radius = 150.0f;
+    int segments = 50;
+
+    glBegin(GL_LINE_LOOP);
+    for (int i = 0; i < segments; i++)
+    {
+        float theta = 2.0f * 3.14159f * float(i) / float(segments);
+        float x = radius * cosf(theta);
+        float y = radius * sinf(theta);
+        glVertex2f(x, y);
+    }
+    glEnd();
+}
+void Field::drawPenaltyBoxes() const
+{
+    float penaltyWidth = 250.0f;
+    float penaltyHeight = 400.0f;
+
+    // Left penalty box
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(-fieldWidth, -penaltyHeight / 2);
+    glVertex2f(-fieldWidth + penaltyWidth, -penaltyHeight / 2);
+    glVertex2f(-fieldWidth + penaltyWidth, penaltyHeight / 2);
+    glVertex2f(-fieldWidth, penaltyHeight / 2);
+    glEnd();
+
+    // Right penalty box
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(fieldWidth, -penaltyHeight / 2);
+    glVertex2f(fieldWidth - penaltyWidth, -penaltyHeight / 2);
+    glVertex2f(fieldWidth - penaltyWidth, penaltyHeight / 2);
+    glVertex2f(fieldWidth, penaltyHeight / 2);
+    glEnd();
+}
+void Field::drawRectangle(float x, float y, float width, float height)
 {
     glBegin(GL_LINE_LOOP);
     glVertex2f(x, y); // Bottom-left
