@@ -22,6 +22,8 @@ add_executable(mini-football src/main.cpp
         include/entities/GoalPost.h
         src/entities/Ball.cpp
         include/entities/Ball.h
+        src/entities/ScoreManager.cpp
+        include/entities/ScoreManager.h
 )
 # --- Link OpenGL + FreeGLUT ---
 target_link_libraries(mini-football

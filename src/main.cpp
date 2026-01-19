@@ -7,12 +7,14 @@
 #include "../include/entities/Field.h"
 #include "../include/entities/GoalPost.h"
 #include "../include/entities/Player.h"
+#include "../include/entities/ScoreManager.h"
 
 Field field;
 DBox dBox;
 GoalPost goalPost;
 Ball ball;
 Player* players[8];
+ScoreManager scoreManager;
 
 int controlledPlayerIndex = 0; // Index of the currently controlled player
 
@@ -80,7 +82,10 @@ void display()
         glVertex2f(cx, cy);
     }
     glEnd();
-    
+
+    scoreManager.draw();
+    glutSwapBuffers();
+
     glPopMatrix();
     //ball
     glPushMatrix();
@@ -106,7 +111,18 @@ void update(int value) {
     if (keyD) players[controlledPlayerIndex]->move(speed, 0);
     // Update ball physics
     ball.update(deltaTime);
-    
+
+    if (ball.x < -900 && ball.y > -200 && ball.y < 200) {
+        scoreManager.incrementTeam2Score();
+        ball.reset();  // Reset ball to center after goal
+    }
+
+    // Check if ball scored in right goal (Team 1 scores)
+    if (ball.x > 900 && ball.y > -200 && ball.y < 200) {
+        scoreManager.incrementTeam1Score();
+        ball.reset();  // Reset ball to center after goal
+    }
+
     // Request redraw
     glutPostRedisplay();
     
@@ -170,7 +186,12 @@ void keyboardInput(const unsigned char key, int x, int y)
         ball.kick(300.0f, 200.0f);
         printf("Ball kicked!\n");
         break;
-            
+
+    case 'x':
+    case 'X':
+        scoreManager.resetScores();
+        break;
+
     case 27:  // ESC key
         exit(0);
         break;
