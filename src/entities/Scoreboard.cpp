@@ -5,7 +5,8 @@
 #include "../../include/entities/Scoreboard.h"
 #include <GL/glut.h>
 
-Scoreboard::Scoreboard() {
+Scoreboard::Scoreboard()
+{
     // Position at bottom center
     x = -400.0f;
     y = -900.0f;
@@ -15,7 +16,8 @@ Scoreboard::Scoreboard() {
     boxHeight = 80.0f;
 }
 
-void Scoreboard::draw(int leftScore, int rightScore) {
+void Scoreboard::draw(int leftScore, int rightScore, int lastScorer, bool isGameOver, int winner)
+{
     // Draw main scoreboard background (gray)
     glColor3f(0.5f, 0.5f, 0.5f);
     drawFilledRectangle(x, y, width, height);
@@ -38,11 +40,41 @@ void Scoreboard::draw(int leftScore, int rightScore) {
     drawFilledRectangle(rightBox1X, boxY, boxWidth, boxHeight);
     drawFilledRectangle(rightBox2X, boxY, boxWidth, boxHeight);
 
-    // Draw "Scoreboard" text area (darker rectangle in center)
-    glColor3f(0.4f, 0.4f, 0.4f);
+    // draw center box
     float textBoxX = x + 250;
     float textBoxWidth = 300.0f;
-    drawFilledRectangle(textBoxX, boxY, textBoxWidth, boxHeight);
+    if (isGameOver == true)
+    {
+        if (winner == 0)
+        {
+            glColor3f(0.6f, 0.2f, 0.8f); // purple
+        }
+        else if (winner == 1)
+        {
+            glColor3f(0.8f, 0.2f, 0.2f); // red
+        }
+        drawFilledRectangle(textBoxX, boxY, textBoxWidth, boxHeight);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        // Draw "WINNER" text in center box
+        drawWonText(textBoxX + 30.0f, boxY );
+    }
+    else
+    {
+        if (lastScorer == 0)
+        {
+            glColor3f(0.6f, 0.2f, 0.8f); // purple
+        }
+        else if (lastScorer == 1)
+        {
+            glColor3f(0.8f, 0.2f, 0.2f); // red
+        }
+        else
+        {
+            glColor3f(0.4f, 0.4f, 0.4f); // gray
+        }
+        drawFilledRectangle(textBoxX, boxY, textBoxWidth, boxHeight);
+    }
+
 
     // Draw scores as white digits
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -54,25 +86,28 @@ void Scoreboard::draw(int leftScore, int rightScore) {
     drawDigit(rightScore, rightBox2X + 35, boxY + 20);
 }
 
-void Scoreboard::drawRectangle(float x, float y, float w, float h) {
+void Scoreboard::drawRectangle(float x, float y, float w, float h)
+{
     glBegin(GL_LINE_LOOP);
-        glVertex2f(x, y);
-        glVertex2f(x + w, y);
-        glVertex2f(x + w, y + h);
-        glVertex2f(x, y + h);
+    glVertex2f(x, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x, y + h);
     glEnd();
 }
 
-void Scoreboard::drawFilledRectangle(float x, float y, float w, float h) {
+void Scoreboard::drawFilledRectangle(float x, float y, float w, float h)
+{
     glBegin(GL_QUADS);
-        glVertex2f(x, y);
-        glVertex2f(x + w, y);
-        glVertex2f(x + w, y + h);
-        glVertex2f(x, y + h);
+    glVertex2f(x, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x, y + h);
     glEnd();
 }
 
-void Scoreboard::drawDigit(int digit, float x, float y) {
+void Scoreboard::drawDigit(int digit, float x, float y)
+{
     // Simple digit drawing using rectangles
     // Each digit is made of small rectangles
 
@@ -82,98 +117,203 @@ void Scoreboard::drawDigit(int digit, float x, float y) {
     glBegin(GL_QUADS);
 
     // Draw digit based on number
-    switch(digit) {
-        case 0:
-            // Draw 0
-            glVertex2f(x, y);
-            glVertex2f(x + segWidth, y);
-            glVertex2f(x + segWidth, y + segHeight);
-            glVertex2f(x, y + segHeight);
+    switch (digit)
+    {
+    case 0:
+        // Draw 0
+        glVertex2f(x, y);
+        glVertex2f(x + segWidth, y);
+        glVertex2f(x + segWidth, y + segHeight);
+        glVertex2f(x, y + segHeight);
 
-            // Cut out center
-            glColor3f(0.3f, 0.5f, 0.8f);  // Same as box color
-            glVertex2f(x + 8, y + 8);
-            glVertex2f(x + segWidth - 8, y + 8);
-            glVertex2f(x + segWidth - 8, y + segHeight - 8);
-            glVertex2f(x + 8, y + segHeight - 8);
-            glColor3f(1.0f, 1.0f, 1.0f);  // Back to white
-            break;
+        // Cut out center
+        glColor3f(0.3f, 0.5f, 0.8f); // Same as box color
+        glVertex2f(x + 8, y + 8);
+        glVertex2f(x + segWidth - 8, y + 8);
+        glVertex2f(x + segWidth - 8, y + segHeight - 8);
+        glVertex2f(x + 8, y + segHeight - 8);
+        glColor3f(1.0f, 1.0f, 1.0f); // Back to white
+        break;
 
-        case 1:
-            // Draw 1 (vertical line on right)
-            glVertex2f(x + segWidth - 10, y);
-            glVertex2f(x + segWidth, y);
-            glVertex2f(x + segWidth, y + segHeight);
-            glVertex2f(x + segWidth - 10, y + segHeight);
-            break;
+    case 1:
+        // Draw 1 (vertical line on right)
+        glVertex2f(x + segWidth - 10, y);
+        glVertex2f(x + segWidth, y);
+        glVertex2f(x + segWidth, y + segHeight);
+        glVertex2f(x + segWidth - 10, y + segHeight);
+        break;
 
-        case 2:
-            // Top horizontal
-            glVertex2f(x, y + segHeight - 8);
-            glVertex2f(x + segWidth, y + segHeight - 8);
-            glVertex2f(x + segWidth, y + segHeight);
-            glVertex2f(x, y + segHeight);
+    case 2:
+        // Top horizontal
+        glVertex2f(x, y + segHeight - 8);
+        glVertex2f(x + segWidth, y + segHeight - 8);
+        glVertex2f(x + segWidth, y + segHeight);
+        glVertex2f(x, y + segHeight);
 
-            // Right vertical top
-            glVertex2f(x + segWidth - 10, y + segHeight / 2);
-            glVertex2f(x + segWidth, y + segHeight / 2);
-            glVertex2f(x + segWidth, y + segHeight);
-            glVertex2f(x + segWidth - 10, y + segHeight);
+        // Right vertical top
+        glVertex2f(x + segWidth - 10, y + segHeight / 2);
+        glVertex2f(x + segWidth, y + segHeight / 2);
+        glVertex2f(x + segWidth, y + segHeight);
+        glVertex2f(x + segWidth - 10, y + segHeight);
 
-            // Middle horizontal
-            glVertex2f(x, y + segHeight / 2 - 4);
-            glVertex2f(x + segWidth, y + segHeight / 2 - 4);
-            glVertex2f(x + segWidth, y + segHeight / 2 + 4);
-            glVertex2f(x, y + segHeight / 2 + 4);
+        // Middle horizontal
+        glVertex2f(x, y + segHeight / 2 - 4);
+        glVertex2f(x + segWidth, y + segHeight / 2 - 4);
+        glVertex2f(x + segWidth, y + segHeight / 2 + 4);
+        glVertex2f(x, y + segHeight / 2 + 4);
 
-            // Left vertical bottom
-            glVertex2f(x, y);
-            glVertex2f(x + 10, y);
-            glVertex2f(x + 10, y + segHeight / 2);
-            glVertex2f(x, y + segHeight / 2);
+        // Left vertical bottom
+        glVertex2f(x, y);
+        glVertex2f(x + 10, y);
+        glVertex2f(x + 10, y + segHeight / 2);
+        glVertex2f(x, y + segHeight / 2);
 
-            // Bottom horizontal
-            glVertex2f(x, y);
-            glVertex2f(x + segWidth, y);
-            glVertex2f(x + segWidth, y + 8);
-            glVertex2f(x, y + 8);
-            break;
+        // Bottom horizontal
+        glVertex2f(x, y);
+        glVertex2f(x + segWidth, y);
+        glVertex2f(x + segWidth, y + 8);
+        glVertex2f(x, y + 8);
+        break;
 
-        case 3:
-            // Top
-            glVertex2f(x, y + segHeight - 8);
-            glVertex2f(x + segWidth, y + segHeight - 8);
-            glVertex2f(x + segWidth, y + segHeight);
-            glVertex2f(x, y + segHeight);
+    case 3:
+        // Top
+        glVertex2f(x, y + segHeight - 8);
+        glVertex2f(x + segWidth, y + segHeight - 8);
+        glVertex2f(x + segWidth, y + segHeight);
+        glVertex2f(x, y + segHeight);
 
-            // Right vertical
-            glVertex2f(x + segWidth - 10, y);
-            glVertex2f(x + segWidth, y);
-            glVertex2f(x + segWidth, y + segHeight);
-            glVertex2f(x + segWidth - 10, y + segHeight);
+        // Right vertical
+        glVertex2f(x + segWidth - 10, y);
+        glVertex2f(x + segWidth, y);
+        glVertex2f(x + segWidth, y + segHeight);
+        glVertex2f(x + segWidth - 10, y + segHeight);
 
-            // Middle
-            glVertex2f(x, y + segHeight / 2 - 4);
-            glVertex2f(x + segWidth, y + segHeight / 2 - 4);
-            glVertex2f(x + segWidth, y + segHeight / 2 + 4);
-            glVertex2f(x, y + segHeight / 2 + 4);
+        // Middle
+        glVertex2f(x, y + segHeight / 2 - 4);
+        glVertex2f(x + segWidth, y + segHeight / 2 - 4);
+        glVertex2f(x + segWidth, y + segHeight / 2 + 4);
+        glVertex2f(x, y + segHeight / 2 + 4);
 
-            // Bottom
-            glVertex2f(x, y);
-            glVertex2f(x + segWidth, y);
-            glVertex2f(x + segWidth, y + 8);
-            glVertex2f(x, y + 8);
-            break;
+        // Bottom
+        glVertex2f(x, y);
+        glVertex2f(x + segWidth, y);
+        glVertex2f(x + segWidth, y + 8);
+        glVertex2f(x, y + 8);
+        break;
 
-        default:
-            // For numbers 4-9, just draw the digit as-is
-            // You can add more cases if needed
-            glVertex2f(x, y);
-            glVertex2f(x + segWidth, y);
-            glVertex2f(x + segWidth, y + segHeight);
-            glVertex2f(x, y + segHeight);
-            break;
+    default:
+        // For numbers 4-9, just draw the digit as-is
+        // You can add more cases if needed
+        glVertex2f(x, y);
+        glVertex2f(x + segWidth, y);
+        glVertex2f(x + segWidth, y + segHeight);
+        glVertex2f(x, y + segHeight);
+        break;
     }
+    glEnd();
+}
+void Scoreboard::drawWonText(float x, float y)
+{
+    float w = 60.0f;
+    float h = 80.0f;
+    float t = 8.0f;
+    float spacing = 20.0f;
 
+    /* ================= W ================= */
+
+    // Left vertical
+    glBegin(GL_QUADS);
+    glVertex2f(x, y);
+    glVertex2f(x + t, y);
+    glVertex2f(x + t, y + h);
+    glVertex2f(x, y + h);
+    glEnd();
+
+    // Middle-left
+    glBegin(GL_POLYGON);
+    glVertex2f(x + w * 0.3f, y);
+    glVertex2f(x + w * 0.3f + t, y);
+    glVertex2f(x + w * 0.3f + t, y + h * 0.6f);
+    glVertex2f(x + w * 0.3f, y + h * 0.6f);
+    glEnd();
+
+    // Middle-right
+    glBegin(GL_POLYGON);
+    glVertex2f(x + w * 0.6f, y);
+    glVertex2f(x + w * 0.6f + t, y);
+    glVertex2f(x + w * 0.6f + t, y + h * 0.6f);
+    glVertex2f(x + w * 0.6f, y + h * 0.6f);
+    glEnd();
+
+    // Right vertical
+    glBegin(GL_POLYGON);
+    glVertex2f(x + w - t, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x + w - t, y + h);
+    glEnd();
+
+    /* ================= O ================= */
+
+    x += w + spacing;
+
+    // Left
+    glBegin(GL_POLYGON);
+    glVertex2f(x, y);
+    glVertex2f(x + t, y);
+    glVertex2f(x + t, y + h);
+    glVertex2f(x, y + h);
+    glEnd();
+
+    // Right
+    glBegin(GL_POLYGON);
+    glVertex2f(x + w - t, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x + w - t, y + h);
+    glEnd();
+
+    // Top
+    glBegin(GL_POLYGON);
+    glVertex2f(x, y + h - t);
+    glVertex2f(x + w, y + h - t);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x, y + h);
+    glEnd();
+
+    // Bottom
+    glBegin(GL_POLYGON);
+    glVertex2f(x, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + t);
+    glVertex2f(x, y + t);
+    glEnd();
+
+    /* ================= N ================= */
+
+    x += w + spacing;
+
+    // Left vertical
+    glBegin(GL_POLYGON);
+    glVertex2f(x, y);
+    glVertex2f(x + t, y);
+    glVertex2f(x + t, y + h);
+    glVertex2f(x, y + h);
+    glEnd();
+
+    // Right vertical
+    glBegin(GL_POLYGON);
+    glVertex2f(x + w - t, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x + w - t, y + h);
+    glEnd();
+
+    // Middle stroke (diagonal simplified)
+    glBegin(GL_POLYGON);
+    glVertex2f(x + t, y + h);
+    glVertex2f(x + t + t/2, y + h);
+    glVertex2f(x + w - t, y);
+    glVertex2f(x + w - t - t/2, y);
     glEnd();
 }
