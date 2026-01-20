@@ -10,7 +10,7 @@ public:
     Scoreboard();
 
     // Draw the scoreboard
-    void draw(int leftScore, int rightScore);
+    void draw(int leftScore, int rightScore, int lastScorer, bool isGameOver, int winner);
 
 private:
     // Scoreboard position and size
@@ -25,5 +25,6 @@ private:
     void drawRectangle(float x, float y, float w, float h);
     void drawFilledRectangle(float x, float y, float w, float h);
     void drawDigit(int digit, float x, float y);
+    void drawWonText(float x, float y);
 };
 #endif // MINI_FOOTBALL_SCOREBOARD_H

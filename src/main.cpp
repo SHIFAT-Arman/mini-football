@@ -31,6 +31,12 @@ bool keyD = false;
 int leftScore=0;
 int rightScore=0;
 
+// goal tracking
+int lastScorer = -1;
+
+// game state
+bool gameOver = false;
+int winner = -1;
 
 void initPlayers()
 {
@@ -71,7 +77,7 @@ void display()
     glPushMatrix();
     glTranslatef(0.0f, 700.0f, 1.0f);
     glScalef(1.80f, 1.80f, 1.0f); // 180% bigger
-    scoreboard.draw(leftScore, rightScore);
+    scoreboard.draw(leftScore, rightScore,lastScorer, gameOver, winner);
     glPopMatrix();
 
     // draw DBox
@@ -118,6 +124,7 @@ void display()
     if (goal==1)
     {
         leftScore++;
+        lastScorer = 0; // red
         ball.reset();
         players[0]->x = -700.0f;
         players[0]->y = 0.0f;
@@ -128,6 +135,7 @@ void display()
     }else if (goal==2)
     {
         rightScore++;
+        lastScorer = 1; // purple
         ball.reset();
         players[0]->x = -700.0f;
         players[0]->y = 0.0f;
@@ -135,10 +143,11 @@ void display()
         players[1]->x = 700.0f;
         players[1]->y = 0.0f;
         glutPostRedisplay();
-    }
-    if (leftScore == 3 || rightScore == 3)
+    } else if (leftScore == 3 || rightScore == 3)
     {
         // resetGame();
+        gameOver = true;
+        winner = (leftScore == 3) ? 0 : 1;
         glutPostRedisplay();
     }
     glPushMatrix();
