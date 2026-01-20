@@ -2,20 +2,23 @@
 // Created by shifat arman on 1/2/2026.
 //
 
-#include "../../include/entities/Field.h"
-#include <GL/glut.h>
+#include "Field.h"
+#include <GL/freeglut.h>
 #include <cmath>
 Field::Field()
 {
     fieldWidth = 900.0f;
     fieldHeight = 600.0f;
 }
+
+
+
 void Field::draw()
 {
+    drawStadium();
     glColor3f(1.0f, 1.0f, 1.0f);
     drawFieldBoundary();
     drawCenterLine();
-    drawStadium();
 }
 void Field::drawFieldBoundary() const
 {
@@ -33,7 +36,7 @@ void Field::drawCenterLine() const
     glVertex2f(0.0f,  fieldHeight);
     glEnd();
 }
-void Field::drawRectangle(float x, float y, float width, float height) 
+void Field::drawRectangle(float x, float y, float width, float height)
 {
     glBegin(GL_LINE_LOOP);
     glVertex2f(x, y); // Bottom-left
@@ -50,7 +53,7 @@ void Field::drawStadium() const
     float baseY = fieldHeight;
     float topY  = baseY + stadiumHeight;
 
-
+    // ================= OUTER WALL =================
     glColor3f(0.35f, 0.35f, 0.35f);
     glLineWidth(3.0f);
     glBegin(GL_LINE_LOOP);
@@ -60,7 +63,7 @@ void Field::drawStadium() const
     glVertex2f(-fieldWidth - marginX, topY);
     glEnd();
 
-
+    // ================= SEATING STEPS =================
     int rows = 10;
     float rowHeight = stadiumHeight / rows;
     for (int r = 0; r <= rows; r++)
@@ -74,7 +77,7 @@ void Field::drawStadium() const
         glEnd();
     }
 
-
+    // ================= AISLES =================
     glColor3f(0.55f, 0.55f, 0.55f);
     int aisles = 6;
     for (int i = 1; i < aisles; i++)
@@ -87,11 +90,11 @@ void Field::drawStadium() const
         glEnd();
     }
 
-
-    float headR = 20.0f;
-    int peopleRows[] = {2, 4, 6};
+    // ================= PEOPLE (STRICT SEATS) =================
+    float headR = 20.0f;  // Increased from 14.0f to 20.0f
+    int peopleRows[] = {2, 4, 6};   // only these rows have people
     int rowCount = 3;
-    int peoplePerRow = 8;
+    int peoplePerRow = 8;          // reduced count
 
     for (int i = 0; i < rowCount; i++)
     {
@@ -105,18 +108,18 @@ void Field::drawStadium() const
         for (int p = 0; p < peoplePerRow; p++)
         {
             float x = leftX + p * spacing;
-
+            // stagger formation
             if (i % 2 == 1) x += spacing * 0.35f;
-
+            // safety clamp (absolute guarantee)
             if (x < leftX || x > rightX) continue;
 
-
+            // Choose color based on side - Team Purple on left, Team Red on right
             if (x < 0)
-                glColor3f(0.7f, 0.1f, 0.9f);
+                glColor3f(0.7f, 0.1f, 0.9f);  // Purple team color
             else
-                glColor3f(1.0f, 0.1f, 0.1f);
+                glColor3f(1.0f, 0.1f, 0.1f);  // Red team color
 
-
+            // Draw larger person (head)
             glBegin(GL_POLYGON);
             for (int k = 0; k < 16; k++)
             {
@@ -126,6 +129,7 @@ void Field::drawStadium() const
             }
             glEnd();
 
+            // Draw body below the head
             glBegin(GL_POLYGON);
             glVertex2f(x - headR * 0.4f, y - headR * 0.9f);
             glVertex2f(x + headR * 0.4f, y - headR * 0.9f);
@@ -134,7 +138,7 @@ void Field::drawStadium() const
             glEnd();
 
             // Draw arms
-            glColor3f(0.9f, 0.7f, 0.5f);
+            glColor3f(0.9f, 0.7f, 0.5f);  // Skin color for arms
             glBegin(GL_POLYGON);
             // Left arm
             glVertex2f(x - headR * 0.4f, y - headR * 1.0f);
@@ -153,6 +157,7 @@ void Field::drawStadium() const
         }
     }
 
+    // ================= FRONT RAIL =================
     glColor3f(0.7f, 0.7f, 0.7f);
     glLineWidth(2.0f);
     glBegin(GL_LINES);
@@ -160,4 +165,43 @@ void Field::drawStadium() const
     glVertex2f( fieldWidth + marginX * 0.25f, baseY + rowHeight);
     glEnd();
     glLineWidth(1.0f);
+}
+
+
+
+
+
+
+
+
+
+
+Field field;
+void display()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    field.draw();
+
+    glFlush();   // since you're using GLUT_SINGLE
+}
+int main(int argc, char** argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(1000, 1000);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("OpenGL 64-bit FreeGLUT Test");
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(-1500, 1500, -1500, 1500);
+    glutDisplayFunc(display);
+    glutMainLoop();
+    return 0;
 }

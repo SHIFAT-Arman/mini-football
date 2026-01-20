@@ -14,10 +14,11 @@ public:
 private:
     float fieldWidth;
     float fieldHeight;
-    
+
+        void drawStadium() const;
     void drawFieldBoundary() const;
     void drawCenterLine() const;
-    void drawStadium() const;
+
     void drawRectangle(float x, float y, float width, float height) ;
 };
 #endif
