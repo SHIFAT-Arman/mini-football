@@ -4,13 +4,10 @@
 
 #include "../../include/entities/Field.h"
 #include <GL/glut.h>
-<<<<<<< Updated upstream
-=======
 #include <cmath>
 
 // Animation variable
 float jumpTime = 0.0f; // Advances every frame
->>>>>>> Stashed changes
 
 Field::Field()
 {
@@ -20,22 +17,19 @@ Field::Field()
 
 void Field::draw()
 {
-    glColor3f(1.0f, 1.0f, 1.0f);
     drawFieldBoundary();
     drawCenterLine();
-<<<<<<< Updated upstream
-=======
     drawStadium();
-
+    drawMidCircle(0, 0, 50);
     // Increment jump animation
     jumpTime += 0.05f;
     glutPostRedisplay(); // Continuous redraw
->>>>>>> Stashed changes
 }
 
 void Field::drawFieldBoundary() const
 {
-    glBegin(GL_LINE_LOOP);
+    glColor3f(144/255.0f, 169/255.0f, 85/255.0f); //144, 169, 85
+    glBegin(GL_POLYGON);
     glVertex2f(-fieldWidth, -fieldHeight);
     glVertex2f(fieldWidth, -fieldHeight);
     glVertex2f(fieldWidth, fieldHeight);
@@ -45,6 +39,7 @@ void Field::drawFieldBoundary() const
 
 void Field::drawCenterLine() const
 {
+    glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_LINES);
     glVertex2f(0.0f, -fieldHeight);
     glVertex2f(0.0f, fieldHeight);
@@ -60,8 +55,43 @@ void Field::drawRectangle(float x, float y, float width, float height)
     glVertex2f(x, y + height); // Top-left
     glEnd();
 }
-<<<<<<< Updated upstream
-=======
+
+void Field::drawMidCircle(int xc, int yc, int r) const
+{
+    int x = 0;
+    int y = r;
+    int d = 3 - 2 * r;
+
+    glBegin(GL_LINE_LOOP);
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    while (x <= y)
+    {
+        // 8-way symmetry
+        glVertex2i(xc + x, yc + y);
+        glVertex2i(xc - x, yc + y);
+        glVertex2i(xc + x, yc - y);
+        glVertex2i(xc - x, yc - y);
+
+        glVertex2i(xc + y, yc + x);
+        glVertex2i(xc - y, yc + x);
+        glVertex2i(xc + y, yc - x);
+        glVertex2i(xc - y, yc - x);
+
+        if (d < 0)
+        {
+            d = d + 4 * x + 6;
+        }
+        else
+        {
+            d = d + 4 * (x - y) + 10;
+            y--;
+        }
+        x++;
+    }
+
+    glEnd();
+}
 
 void Field::drawStadium() const
 {
@@ -180,4 +210,3 @@ void Field::drawStadium() const
     glEnd();
     glLineWidth(1.0f);
 }
->>>>>>> Stashed changes
