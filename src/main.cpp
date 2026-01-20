@@ -41,29 +41,6 @@ void initPlayers()
 
 }
 
-//score cirlces showing
-
-void drawGoalCircles(int score, float startX)
-{
-    float y=-1000.0f;
-    float radius = 50.0f;
-
-    glColor3f(1.0f, 1.0f, 0.0f);
-
-    for (int i = 0; i < score; i++)
-    {
-        float x = startX + i *50.0f;
-
-        glBegin(GL_POLYGON);
-        for (int j = 0; j < 20; j++)
-        {
-            float angle = 2.0f * 3.14159f * j / 20;
-            glVertex2f(x+cos(angle)*radius,
-                y+sin(angle)*radius);
-        }
-        glEnd();
-    }
-}
 
 //winning  2 goals
 void resetGame()
@@ -85,7 +62,6 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3f(1, 1, 1);
-    glPointSize(10.0f);
     // Draw the field
     glPushMatrix();
     field.draw();
@@ -129,7 +105,6 @@ void display()
         glVertex2f(cx, cy);
     }
     glEnd();
-
     glPopMatrix();
     //ball
     int currentTime = glutGet(GLUT_ELAPSED_TIME);
@@ -161,18 +136,15 @@ void display()
         players[1]->y = 0.0f;
         glutPostRedisplay();
     }
-    if (leftScore >=2 || rightScore >=2)
+    if (leftScore == 3 || rightScore == 3)
     {
-        resetGame();
+        // resetGame();
         glutPostRedisplay();
     }
     glPushMatrix();
     ball.draw();
     glPopMatrix();
-
-    //score circles draw
-    drawGoalCircles(leftScore, -1400.0f);
-    drawGoalCircles(rightScore, 1000.0f);
+    
 
     glFlush();
 
@@ -207,6 +179,29 @@ void keyboard(unsigned char key, int x, int y)
     glutPostRedisplay(); //redrawafter exc.
 }
 
+void reshape(int w, int h)
+{
+    if (h == 0) h = 1;
+
+    glViewport(0, 0, w, h);
+
+    float aspect = (float)w / (float)h;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    if (aspect >= 1.0f) {
+        // Wide window
+        gluOrtho2D(-1500 * aspect, 1500 * aspect, -1500, 1500);
+    } else {
+        // Tall window
+        gluOrtho2D(-1500, 1500, -1500 / aspect, 1500 / aspect);
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+}
+
+
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -231,6 +226,7 @@ int main(int argc, char** argv)
 
 
     glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
     //movement
     glutKeyboardFunc(keyboard);
     // Start the main event loop
