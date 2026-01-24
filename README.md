@@ -1,6 +1,9 @@
 # Mini Football game
 
 ----
+[![OpenGl](https://img.shields.io/badge/OpenGl-5487A6?logo=OpenGl&logoColor=fff)](#) [![C++](https://img.shields.io/badge/C++-%2300599C.svg?logo=c%2B%2B&logoColor=white)](#)
+
+----
 Simple game based on OpenGL libraries with C++. Player has to score 3 three goals to win.
 
 ----
